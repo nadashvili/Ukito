@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>მთავარი მენიუ</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #2b2b2b, #1e1e1e);
+            color: #d4d4d4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Canvas ფონის უკან */
+            background-image: url(lv_0_20241129020311.gif);
+    background-size: 100%;
+    filter: grayscale(100%);
+        }
+
+        #menu-container {
+            text-align: center;
+            z-index: 1; /* მენიუ წინ */
+        }
+
+        #menu-container h1 {
+            color: #ffffff;
+            font-size: 3rem;
+        }
+
+        #start-game-btn {
+            background: #444;
+            color: white;
+            font-size: 1.5rem;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+
+        #start-game-btn:hover {
+            background: #666;
+        }
+
+        #menu-container p {
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="backgroundCanvas"></canvas>
+    <div id="menu-container">
+<br><br><br><br>
+        <button id="start-game-btn">თამაშის დაწყება</button><br><br>
+        <p>აიცილე დაბრკოლებები და<br>ეცადე ააგროვო<br>რაც შეიძლება მეტი ქულა</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("backgroundCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Canvas ზომები
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // ფანჯრის ზომის ცვლილების შემთხვევაში
+        window.addEventListener("resize", () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Background particles array
+        let bgParticles = [];
+
+        // Initialize background particles
+        function initBackgroundParticles(count) {
+            for (let i = 0; i < count; i++) {
+                bgParticles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 3 + 2, // Slightly larger particles
+                    color: "rgba(255, 255, 255, 0.0)", // White glowing color
+                    velocityY: Math.random() * 3 + 2, // Faster downward movement
+                });
+            }
+        }
+
+        // Draw background particles
+        function drawBackgroundParticles() {
+            bgParticles.forEach((particle) => {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                ctx.fillStyle = particle.color;
+                ctx.shadowColor = particle.color;
+                ctx.shadowBlur = 10; // Glowing effect
+                ctx.fill();
+                ctx.closePath();
+                ctx.restore();
+
+                // Move the particle downward
+                particle.y += particle.velocityY;
+
+                // Reset particle to the top if it exits the bottom
+                if (particle.y > canvas.height) {
+                    particle.y = -particle.radius; // Start just above the canvas
+                    particle.x = Math.random() * canvas.width; // Random horizontal position
+                }
+            });
+        }
+
+        // Initialize particles
+        initBackgroundParticles(100);
+
+        // Animation loop
+        function updateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBackgroundParticles();
+            requestAnimationFrame(updateParticles);
+        }
+
+        // Start the animation
+        updateParticles();
+
+        // Start game button click
+        document.getElementById("start-game-btn").addEventListener("click", () => {
+            window.location.href = "game.html"; // გადადიხართ თამაშის გვერდზე
+        });
+    </script>
+</body>
+</html>
